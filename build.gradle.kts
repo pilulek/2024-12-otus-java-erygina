@@ -1,23 +1,45 @@
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+import org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+
 plugins {
     idea
-    id("java")
+    id("io.spring.dependency-management")
+    id("org.springframework.boot") apply false
 }
 
-group = "ru.otus"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+idea {
+    project {
+        languageLevel = IdeaLanguageLevel(21)
+    }
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
-val guava: String by project
-dependencies {
-    implementation("com.google.guava:guava:33.4.0-jre")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-}
+allprojects {
+    group = "ru.otus"
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    val guava: String by project
+
+    apply(plugin = "io.spring.dependency-management")
+    dependencyManagement {
+        dependencies {
+            imports {
+                mavenBom(BOM_COORDINATES)
+            }
+            dependency("com.google.guava:guava:$guava")
+        }
+    }
+
+    plugins.apply(JavaPlugin::class.java)
+    extensions.configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
