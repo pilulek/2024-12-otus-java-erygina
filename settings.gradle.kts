@@ -1,5 +1,6 @@
 rootProject.name = "otus-java-erygina-2024-12"
 include("hw01-gradle")
+include("hw02-generics")
 
 pluginManagement {
     val dependencyManagement: String by settings

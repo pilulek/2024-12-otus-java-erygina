@@ -43,3 +43,20 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_21
     }
 }
+
+subprojects {
+    plugins.apply(JavaPlugin::class.java)
+    extensions.configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging.showExceptions = true
+        reports {
+            junitXml.required.set(true)
+            html.required.set(true)
+        }
+    }
+}
